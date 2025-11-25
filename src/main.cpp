@@ -75,27 +75,35 @@ void setup() {
   Serial.begin(115200);
 
   // 1. Init Bluetooth
-  SerialBT.begin("SoundTherapy_Device"); 
-  SerialBT.setPin("1234");
-  Serial.println("Bluetooth Started.");
+  // NAME CHANGED to force phone to refresh cache
+  // PIN REMOVED to fix connection hanging
+  SerialBT.begin("SmartSleep_Pro"); 
+  Serial.println("Bluetooth Started. Ready to Pair.");
 
   // 2. Init RTC
-  if (!rtc.begin()) { Serial.println("Error: RTC Not Found"); }
-  if (rtc.lostPower()) { rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); }
+  if (!rtc.begin()) {
+    Serial.println("Error: RTC Not Found");
+  }
+  if (rtc.lostPower()) {
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
 
   // 3. Init Pins
   pinMode(RADAR_PIN, INPUT);
+  
+  // Configure ADC for Battery (11db attenuation for full 3.3V range)
   analogSetAttenuation(ADC_11db);
   pinMode(BATTERY_PIN, INPUT);
+
+  // Amp Shutdown Pin (High = Enable)
   pinMode(I2S_AMP_SD, OUTPUT);
   digitalWrite(I2S_AMP_SD, HIGH);
 
-  // 4. CALIBRATION (New Step)
-  // We must start the Mic hardware first to calibrate
+  // 4. CALIBRATION
   setupI2S_Mic(); 
   performCalibration(); 
 
-  // 5. Launch Tasks
+  // 5. Launch FreeRTOS Tasks
   xTaskCreatePinnedToCore(Task_Logic, "LogicTask", 8192, NULL, 1, &LogicTaskHandle, 1);
   xTaskCreatePinnedToCore(Task_Audio, "AudioTask", 10240, NULL, 2, &AudioTaskHandle, 0);
 }
