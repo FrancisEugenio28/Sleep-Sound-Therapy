@@ -76,6 +76,7 @@ void setup() {
 
   // 1. Init Bluetooth
   SerialBT.begin("SoundTherapy_Device"); 
+  SerialBT.setPin("1234");
   Serial.println("Bluetooth Started.");
 
   // 2. Init RTC
