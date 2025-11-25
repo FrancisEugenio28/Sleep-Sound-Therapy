@@ -112,7 +112,7 @@ void setup() {
   if (rtc.lostPower()) rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
   // 3. Init BLE (Data)
-  BLEDevice::init("SmartSleep_Data"); // Name for App
+  BLEDevice::init("SmartSleep_Device"); // Name for App
   BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
   BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -139,7 +139,7 @@ void setup() {
       .data_in_num = I2S_PIN_NO_CHANGE
   };
   a2dp_sink.set_pin_config(amp_pins);
-  a2dp_sink.start("SmartSleep_Speaker"); // Name for Bluetooth Settings
+  a2dp_sink.start("SmartSleep_Device"); // Name for Bluetooth Settings
   a2dp_sink.set_volume(100); 
 }
 
